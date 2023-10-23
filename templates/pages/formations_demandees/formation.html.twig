@@ -1,0 +1,41 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{formation.titre}} {% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{formation.groupe}} </h1>
+        <h3>{{formation.theme}}</h3>
+        <hr class="my-4">
+        <p>{{formation.typePrestation}}</p>
+        <div class="jumbotron">
+            <hr class="my-4">
+            <h1>{{formation.titre}}</h1>
+            <hr class="my-4">
+            <p "lead">Formation prévue pour la période de {{formation.datePrevisionnel}}</p>
+            <p "lead"><strong>{{ (formation.dateRealisation is same as(null)) ? 'Date non encore fixé' : 'Date fixé au ' ~  formation.dateRealisation}}</strong></p>
+            <p>{{formation.description}}</p>
+            <a href="{{ (formation.fichierPDF is same as(null)) ? ' ' : '../../documents/' ~ formation.fichierPDF}}" target="_blank">{{ (formation.fichierPDF is same as(null)) ? ' ' : 'lien vers le pdf'}}</a>
+            {% if formation.prestataire is not null  %}
+                <p>Formation réalisée par {{formation.prestataire}}</p>
+            {% endif %}
+            
+            </div>
+        </div>
+    </div>
+    <div class="container mt-4">
+        <hr class="my-4">
+        <h2>{{ (inscription.dateDemandeInscription is null) ? 'Formation interne ' : 'Formation ouverte ' }}</h2>
+        <h3>{{ (inscription.dateDemandeInscription is null) ? 'Préinscription le ' ~ inscription.datePresInscription|date('d/m/Y') : 'Demandé le ' ~ inscription.dateDemandeInscription|date('d/m/Y') }}</h3>
+        <p "lead">{{ inscription.upDatedAt|date('d/m/Y') }}</p>
+        <p "lead"><strong>{{ (inscription.dateValidation is null) ? 'Inscription non validé' : 'Inscription validé le ' ~ inscription.dateValidation|date('d/m/Y') }}</strong></p>
+        <h2>{{ (inscription.motivation is null) ? 'Motivation non renseigné ' : 'Motivations : ' ~ inscription.motivation  }}</h2>
+        <div class="count mt-4">
+            <a href="{{ path('formation.supDemFormation' , { id: formation.id}) }}" class="btn btn-warning"> Se desinscrire </a> 
+        </div>
+        {% if formation.dateFinInscription != null %}
+            <p "lead"><strong>Attention les demandes a compté du {{formation.dateFinInscription|date('d/m/Y')}} ne seront pas prises en compte</strong></p>
+        {% endif %}
+    </div>
+
+{% endblock %}

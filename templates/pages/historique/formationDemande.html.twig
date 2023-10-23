@@ -1,0 +1,59 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Historique des formations demandées{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% if inscriptions != [] and inscriptions.getTotalItemCount > 0 %}
+            <h1>Historique des formations demandées</h1>
+
+
+            <div class="count mt-4">
+            <h4>Il y a {{ inscriptions.getTotalItemCount }} presinscriptions au total</h4>
+            </div>
+
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">formation</th>
+                    <th scope="col">theme</th>
+                    <th scope="col">groupe</th>
+                    <th scope="col">date de demande d'inscription</th>
+                    <th scope="col">validation de l'inscription</th>
+                    <th scope="col">formation réalisé par l'utilisateur </th>
+                    <th scope="col">formation réalisé</th>
+                    <th scope="col">etat du groupe</th>
+                    <th scope="col"> </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscription in inscriptions %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ inscription.formation.titre }}</th>
+                        <td>{{ inscription.formation.theme }}</td>
+                        <td>{{ inscription.formation.groupe }}</td>
+                        <td>{{ inscription.dateDemandeInscription|date('d/m/Y') }}</td>
+                        <td>{{ (inscription.validationInscription == false) ? ' non validé' : ' validé le : ' ~ inscription.dateValidation|date('d/m/Y') }}</td>
+                        <td>{{ (inscription.formationRealise == false) ? " non realisé" : ' realisé le : ' ~ inscription.realiseDate|date('d/m/Y') }}</td>
+                        <td>{{ (inscription.formation.realise == false) ? " non realisé" : 'realisé' }}</td>
+                        <td>{{ (inscription.formation.groupe.active == false) ? " inactif" : ' actif '}}</td>
+                        <td>
+                            <td>
+                                <a href="{{ path('historique.inscription', {id: inscription.id}) }}" class="btn btn-info">consulter </a>
+                            </td>
+                        </td>
+                       
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(inscriptions) }}
+            </div>
+            {% else %}
+            <h4>Historique des demandes vide</h4>
+        {% endif %}
+    </div>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include "partials/_header-admin.html.twig" %}
+{% endblock %}
+
+{% block title %}Les groupes de formations{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% if groupeFormations != []  and groupeFormations.getTotalItemCount > 0 %}
+            <h1>Les modules de formations </h1>
+
+            <div class="count mt-4">
+            <h4>{{ groupeFormations.getTotalItemCount }} groupe(s) de formations</h4>
+            </div>
+
+            <div class="d-inline-flex gap-4">
+                <form action="{{ path('admin.groupeIndex') }}" method="POST">
+                    <input type="hidden" name="actif" value="true" />
+                    <button type="submit" class="btn btn-secondary" name="nom" >Groupes actifs </button>
+                </form>
+                <form action="{{ path('admin.groupeIndex') }}" method="POST">
+                    <input type="hidden" name="all" value="true" />
+                    <button type="submit" class="btn btn-secondary" name="all" >Tous les groupes</button>
+                </form>
+            </div>
+
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">nom du groupe</th>
+                        <th scope="col">etat du groupe</th>
+                        <th scope="col"> </th>
+                        <!--<th scope="col">inscription</th>-->
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for groupeFormation in groupeFormations %}
+                        <tr class="table-primary">
+                            <th scope="row">{{ groupeFormation.labelGroupe }}</th>
+                            <th scope="row">{{ (groupeFormation.active == true)? 'actif' : 'inactif' }}</th>
+                            <td>
+                                <a href="{{ path('admin.groupeFormation', { id: groupeFormation.id})}}" class="btn btn-info">consulter </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(groupeFormations) }}
+            </div>
+            {% else %}
+            <h4>Il n'y a pas de formations ouvertes dans ce groupe</h4>
+        {% endif %}
+    </div>
+{% endblock %}

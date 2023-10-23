@@ -1,0 +1,21 @@
+
+{% extends "base.html.twig" %}
+
+{% block title %} Catalogue des formations
+{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+        {% endfor %}
+        <div class="jumbotron">
+            <h1 class="display-4">Bienvenue sur le catalogue des formations</h1>
+            <p class="lead">Le catalogue permet de s'inscrire aux formations ouvertes et de consulter et valider l'inscription des formations proposées en interne.</p>
+            <hr class="my-4">
+            <p>Pour commencer, rendez-vous sur la page d'inscription pour utiliser l'application</p>
+        </div>
+    </div>
+{% endblock %}

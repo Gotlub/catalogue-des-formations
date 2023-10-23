@@ -1,0 +1,83 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include "partials/_header-admin.html.twig" %}
+{% endblock %}
+
+{% block title %}Les formations demandées{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% if formations != [] and formations.getTotalItemCount > 0 %}
+            <h1>Les formations demandées</h1>
+            {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+            {% for message in app.flashes('alert') %}
+                <div class="alert alert-warning mt-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+
+            <div class="count mt-4">
+                <h4>Il y a {{ formations.getTotalItemCount }} formations au total</h4>
+            </div>
+            
+            <div class="d-inline-flex gap-4">
+                <form action="{{ path('admin.formationDem') }}" method="POST">
+                    <input type="hidden" name="nom" value="true" />
+                    <button type="submit" class="btn btn-secondary" name="nom" >Classer par nom de formation </button>
+                </form>
+                <form action="{{ path('admin.formationDem') }}" method="POST">
+                    <input type="hidden" name="date" value="true" />
+                    <button type="submit" class="btn btn-secondary" name="date" >Classer date de modification </button>
+                </form>
+                <a href="{{ path('admin.inscriptionAll') }}" class="btn btn-secondary">Voir toutes les demandes </a>
+            </div>
+            
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col">titre</th>
+                        <th scope="col">nombre de préinscriptions</th>
+                        <th scope="col">date prévisionnel</th>
+                        <th scope="col">date de réalisation</th>
+                        <th scope="col">date de fin d'inscription</th>
+                        <th scope="col">description</th>
+                        <th scope="col">dernière modification</th>
+                        <th scope="col"> </th>
+                        <th scope="col"> </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for formation in formations %}
+                        <tr class="table-primary">
+                            <th scope="row">{{ formation.titre }}</th>
+                            <td>{{ formation.poolUser|length }}</td>
+                            <td>{{ formation.datePrevisionnel }}</td>
+                            <td>{{ formation.dateRealisation }}</td>
+                            <td>{{ (formation.dateFinInscription is null) ? ' non renseigné' : formation.dateFinInscription|date('d/m/Y')  }}</td>
+                            <td>{{ formation.description }}</td>
+                            <td>{{ formation.upDatedAt|date('d/m/Y') }}</td>
+                            <td>
+                                <a href="{{ path('admin.formationListeDem', { id: formation.id})}}" class="btn btn-info">consulter / exporter </a>
+                            </td>
+                            <td>
+                                <a href="{{ path('admin.formationEditDem', { id: formation.id})}}" class="btn btn-warning">gestion des demandes </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(formations) }}
+            </div>
+            {% else %}
+            <h4>Il n'y a pas de formations demandées</h4>
+        {% endif %}
+    </div>
+{% endblock %}

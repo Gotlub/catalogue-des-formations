@@ -1,0 +1,34 @@
+<nav class="navbar navbar-expand-lg  bg-dark" data-bs-theme="dark">
+    <div class="container-fluid">
+      <!--<a class="navbar-brand" href="#">Navbar</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon">coucou</span>
+      </button>-->
+      <div class="collapse navbar-collapse" id="navbarColor01">
+        <ul class="navbar-nav me-auto">
+         <li class="nav-item">
+            <a class="nav-link active" href="{{ path ( 'home.index') }}"> Retour au site
+              <span class="visually-hidden">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ path ( 'admin.formationPI') }}"> Gestion des préinscriptions
+              <span class="visually-hidden">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ path ( 'admin.formationDem') }}" > Gestion des demandes 
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link active" href="{{ path ( 'admin.groupeIndex') }}" > Réalisation des formations
+            </a>
+          </li>
+        </ul>
+        <li class="nav-item d-flex">
+            <a class="navbar-nav ms-md-auto" href="{{ path ( 'formation.easyadmin') }}"  > EasyAdmin
+            </a>
+        </li>
+      </div>
+    </div>
+</nav>

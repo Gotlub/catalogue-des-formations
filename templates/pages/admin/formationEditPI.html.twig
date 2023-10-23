@@ -1,0 +1,127 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include "partials/_header-admin.html.twig" %}
+{% endblock %}
+
+{% block title %} {{formation.titre}} {% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{formation.groupe}} </h1>
+        <h3>{{formation.theme}}</h3>
+        <hr class="my-4">
+        <p>{{formation.typePrestation}}</p>
+        <div class="jumbotron">
+            <hr class="my-4">
+            <h1>{{formation.titre}}</h1>
+            <hr class="my-4">
+            <p "lead">Formation prévu pour la période de {{formation.datePrevisionnel}}</p>
+            <p "lead"><strong>{{ (formation.dateRealisation is same as(null)) ? 'Date non encore fixé' : 'Date fixé au ' ~  formation.dateRealisation}}</strong></p>
+            <p>{{formation.description}}</p>
+            <a href="{{ (formation.fichierPDF is same as(null)) ? ' ' : '../../../documents/' ~ formation.fichierPDF }}" target="_blank">{{ (formation.fichierPDF is same as(null)) ? ' ' : 'lien vers le pdf'}}</a>
+            {% if formation.prestataire is not null  %}
+                <p>Formation réalisée par {{formation.prestataire}}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container mt-4">
+        {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+        {% endfor %}
+        {% for message in app.flashes('alert') %}
+        <div class="alert alert-warning mt-4">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% if inscriptions != [] and inscriptions != null %}
+            <hr class="my-4">
+            <h1>Les presinscriptions</h1>
+
+
+            <div class="count mt-4">
+                <h4>Il y a {{ inscriptions|length }} préinscriptions au total</h4>
+            </div>
+            <form action="{{ path('admin.formationEditPI', {id : formation.id}) }}" method="POST">
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">date de préinscription</th>
+                        <th scope="col">date de modification</th>
+                        <th scope="col">validation de l'inscription</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscription in inscriptions %}
+                        <tr class="table-primary">
+                            <th scope="row">{{ inscription.user }}</th>
+                            <td>{{ inscription.datePresInscription|date('d/m/Y') }}</td>
+                            <td>{{ inscription.upDatedAt|date('d/m/Y') }}</td>
+                            <td>{{ (inscription.validationInscription == false) ? 'Inscription non validé' : inscription.dateValidation|date('d/m/Y') }}</td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{inscription.id}}" name="desinscriptions[]" >
+                                    <label class="form-check-label" for="{{inscription.id}}">
+                                        désinscription
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary" name="desinscriptions[]" >Valider les modifications</button>
+            </form>
+            {% else %}
+            <h4>Vous n'avez pas de préinscription</h4>
+        {% endif %}
+    </div>
+    {% if usersNonInscrit != [] and usersNonInscrit != null %}
+        <div class="container mt-4">
+            <hr class="my-4">
+            <h1>Les utilisateurs</h1>
+            
+            <div class="count mt-4">
+                <h4>Il y a {{ usersNonInscrit|length }} utilisateurs non préinscrit</h4>
+            </div>
+            <form action="{{ path('admin.formationEditPI', {id : formation.id}) }}" method="POST">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Nom</th>
+                            <th>Prenom</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for userNonInscrit in usersNonInscrit %}
+                        <tr class="table-primary">
+                            <th scope="row">{{ userNonInscrit.nom }}</th>
+                                <td>{{ userNonInscrit.prenom }}</td>
+                                <td>
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" value="{{userNonInscrit.id}}" name="inscriptions[]" >
+                                        <label class="form-check-label" for="{{userNonInscrit.id}}">
+                                            préinscription
+                                        </label>
+                                    </div>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                <button type="submit" class="btn btn-success" name="inscriptions[]" >Valider les modifications</button>
+            </form>
+        </div>
+        {% else %}
+        <div class="container mt-4">
+            <hr class="my-4">
+            <h4>Il n'y a pas d'utilisateurs non préinscrit a cette formation</h4>
+        </div>
+        {% endif %}
+        
+{% endblock %}

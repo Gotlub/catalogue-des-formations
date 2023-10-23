@@ -1,0 +1,90 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include "partials/_header-admin.html.twig" %}
+{% endblock %}
+
+{% block title %} {{formation.titre}} {% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{formation.groupe}} </h1>
+        <h3>{{formation.theme}}</h3>
+        <hr class="my-4">
+        <p>{{formation.typePrestation}}</p>
+        <div class="jumbotron">
+            <hr class="my-4">
+            <h1>{{formation.titre}}</h1>
+            <hr class="my-4">
+            <p "lead">Formation prévu pour la période de {{formation.datePrevisionnel}}</p>
+            <p "lead"><strong>{{ (formation.dateRealisation is same as(null)) ? 'Date non encore fixé' : 'Date fixé au ' ~  formation.dateRealisation}}</strong></p>
+            <p>{{formation.description}}</p>
+            <a href="{{ (formation.fichierPDF is same as(null)) ? ' ' : '../../../documents/' ~ formation.fichierPDF }}" target="_blank">{{ (formation.fichierPDF is same as(null)) ? ' ' : 'lien vers le pdf'}}</a>
+            {% if formation.prestataire is not null  %}
+                <p>Formation realisé par {{formation.prestataire}}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container mt-4">
+        {% if inscriptionsVal != [] and inscriptionsVal != null %}
+            <h1>Les demandes</h1>
+
+
+            <div class="count mt-4">
+            <h4>Il y a {{ inscriptionsVal|length }} demandes validées</h4>
+            </div>
+
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">date de demande</th>
+                    <th scope="col">date de modification</th>
+                    <th scope="col">validation de l'inscription</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscriptionVal in inscriptionsVal %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ inscriptionVal.user }}</th>
+                        <td>{{ inscriptionVal.dateDemandeInscription|date('d/m/Y') }}</td>
+                        <td>{{ inscriptionVal.upDatedAt|date('d/m/Y') }}</td>
+                        <td>{{ inscriptionVal.dateValidation|date('d/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+            <a href="{{ path('csv.export' , {id : formation.id} )}}"  class="btn btn-info" target="_blank">Export CSV </a>
+            {% else %}
+            <h4>Vous n'avez pas de demandes validées</h4>
+        {% endif %}
+        {% if inscriptionsNonVal != [] and inscriptionsNonVal != null %}
+
+            <div class="count mt-4">
+            <h4>Il y a {{ inscriptionsNonVal|length }} demandes non validées</h4>
+            </div>
+
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">date de demande</th>
+                    <th scope="col">date de modification</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscriptionNonVal in inscriptionsNonVal %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ inscriptionNonVal.user }}</th>
+                        <td>{{ inscriptionNonVal.dateDemandeInscription|date('d/m/Y') }}</td>
+                        <td>{{ inscriptionNonVal.upDatedAt|date('d/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+            <h4>Aucune demandes non validées</h4>
+        {% endif %}
+    </div>
+{% endblock %}

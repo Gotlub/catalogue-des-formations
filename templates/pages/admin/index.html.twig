@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include "partials/_header-admin.html.twig" %}
+{% endblock %}
+
+{% block title %}Administration {% endblock %}
+
+
+{% block body %}
+    <div class="container mt-4">
+        {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+        {% endfor %}
+        <div class="jumbotron">
+            <h1 class="display-4">Bienvenue sur la partie administrative du catalogue des formations</h1>
+            <br><br><br>
+            <hr class="my-4">
+            <p class="lead">La "gestion par formation" permet de presinscrire plusieurs utilisateurs a une formation et d'exporter au format csv (c'est aux utilisateurs de valider la demande.)</p>
+            <p class="lead">La "gestion des demandes" permet de consulter les demandes utilisateur et de les valider  et d'exporter au format csv (c'est aux admin de valider la demande) </p>
+            <p>(Seules les <strong>formations validées</strong> sont exporté ) </p>
+            <p class="lead">Réalisation des formations permet de passer le statut des formations a "effectué", de même pour les inscriptions</p>
+        </div>
+        <div>
+            <br><br><br>
+            <h3>Notes</h3>
+            <p class="lead">
+                À cause de la conception du site et de la base de données, il est important de séparer les formations "ouvertes" (demande d'inscription libre) et celles qui ne le sont pas (les préinscriptions : les formations proposée en interne) </p>
+        </div>
+
+    </div>
+{% endblock %}
+
+

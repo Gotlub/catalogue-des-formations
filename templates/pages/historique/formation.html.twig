@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %} {{formation.titre}} {% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{formation.groupe}} </h1>
+        <h3>{{formation.theme}}</h3>
+        <hr class="my-4">
+        <p>{{formation.typePrestation}}</p>
+        <div class="jumbotron">
+            <hr class="my-4">
+            <h1>{{formation.titre}}</h1>
+            <p>{{(formation.realise == true) ? 'Formation réalisée' : 'Formation non réalisé'  }}</p>
+            <p>{{(formation.groupe.active == true) ? 'Groupe actif' : 'Groupe inactif'  }}</p>
+            <hr class="my-4">
+            <p "lead">Formation prévue pour la période de {{formation.datePrevisionnel}}</p>
+            <p "lead"><strong>{{ (formation.dateRealisation is same as(null)) ? 'Date non encore fixé' : 'Date fixé au ' ~  formation.dateRealisation}}</strong></p>
+            <p>{{formation.description}}</p>
+            <a href="{{ (formation.fichierPDF is same as(null)) ? ' ' : formation.fichierPDF}}" target="_blank">{{ (formation.fichierPDF is same as(null)) ? ' ' : 'lien vers le pdf'}}</a>
+            {% if formation.prestataire is not null  %}
+                <p>Formation realisé par {{formation.prestataire}}</p>
+            {% endif %}
+            <hr class="my-4">
+            <div class="container mt-4"> {{ (inscription.demandeUser == true ) ? 'Inscritpion demandé le ' ~  inscription.dateDemandeInscription|date('d/m/Y') : ' Préinscription effectué le : ' ~ inscription.datePresInscription|date('d/m/Y') }}</div>
+            <div class="container mt-4"> {{ (inscription.validationInscription == true ) ? 'Inscritpion validé le ' ~  inscription.validationInscription|date('d/m/Y') : 'Inscritpion non validé' }}</div>
+            <div class="container mt-4"> {{ (inscription.formationRealise == true ) ? 'Formation effectuée ' : 'Formation non effectuée' }}</div>
+        </div>
+    </div>    
+{% endblock %}

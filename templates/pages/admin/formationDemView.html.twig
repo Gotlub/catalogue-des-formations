@@ -1,0 +1,107 @@
+{% extends 'base.html.twig' %}
+
+{% block header %}
+    {% include "partials/_header-admin.html.twig" %}
+{% endblock %}
+
+{% block title %} {{formation.titre}} {% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        <h1>{{formation.groupe}} </h1>
+        <h3>{{formation.theme}}</h3>
+        <hr class="my-4">
+        <p>{{formation.typePrestation}}</p>
+        <div class="jumbotron">
+            <hr class="my-4">
+            <h1>{{formation.titre}}</h1>
+            <hr class="my-4">
+            <p "lead">Formation prévue pour la période de {{formation.datePrevisionnel}}</p>
+            <p "lead"><strong>{{ (formation.dateRealisation is same as(null)) ? 'Date non encore fixé' : 'Date fixé au ' ~  formation.dateRealisation}}</strong></p>
+            <p>{{formation.description}}</p>
+            <a href="{{ (formation.fichierPDF is same as(null)) ? ' ' : '../../../documents/' ~ formation.fichierPDF formation.fichierPDF}}" target="_blank">{{ (formation.fichierPDF is same as(null)) ? ' ' : 'lien vers le pdf'}}</a>
+            {% if formation.prestataire is not null  %}
+                <p>Formation realisée par {{formation.prestataire}}</p>
+            {% endif %}
+        </div>
+    </div>
+    <div class="container mt-4">
+        {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+        {% endfor %}
+        {% if inscriptions != [] and inscriptions != null %}
+            <hr class="my-4">
+            <h1>Les demandes</h1>
+
+
+            <div class="count mt-4">
+                <h4>Il y a {{ inscriptions|length }} demandes au total</h4>
+            </div>
+            <form action="{{ path('admin.formationEditPI', {id : formation.id}) }}" method="POST">
+                <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th scope="col"></th>
+                        <th scope="col">date de demande d'inscription</th>
+                        <th scope="col">date de dernière modification</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for inscription in inscriptions %}
+                        <tr class="table-primary">
+                            <th scope="row">{{ inscription.user }}</th>
+                            <td>{{ inscription.dateDemandeInscription|date('d/m/Y') }}</td>
+                            <td>{{ inscription.upDatedAt|date('d/m/Y') }}</td>
+                            <td>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="{{inscription.id}}" name="confirmations[]" >
+                                    <label class="form-check-label" for="{{inscription.id}}">
+                                        validation
+                                    </label>
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+                </table>
+                <button type="submit" class="btn btn-primary" name="confirmations[]" >Valider les demandes</button>
+            </form>
+            {% else %}
+            <h4>Vous n'avez pas de demandes</h4>
+        {% endif %}
+        {% if demandesValides != [] and demandesValides != null %}
+            <hr class="my-4">
+            <h1>Les demandes validées</h1>
+
+
+            <div class="count mt-4">
+                <h4>Il y a {{ demandesValides|length }} demandes validées au total</h4>
+            </div>
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col">date de demande d'inscription</th>
+                    <th scope="col">date de dernière modification</th>
+                    <th scope="col">date de validation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for demandesValide in demandesValides %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ demandesValide.user }}</th>
+                        <td>{{ demandesValide.dateDemandeInscription|date('d/m/Y') }}</td>
+                        <td>{{ demandesValide.upDatedAt|date('d/m/Y') }}</td>
+                        <td>{{ demandesValide.dateValidation|date('d/m/Y') }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+            {% else %}
+            <h4>Vous n'avez pas de demandes validées</h4>
+        {% endif %}
+    </div>
+{% endblock %}

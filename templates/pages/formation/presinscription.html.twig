@@ -1,0 +1,79 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Les presinscriptions active{% endblock %}
+
+{% block body %}
+    <div class="container mt-4">
+        {% for message in app.flashes('success') %}
+                <div class="alert alert-success mt-4">
+                    {{ message }}
+                </div>
+        {% endfor %}
+        {% for message in app.flashes('alert') %}
+        <div class="alert alert-warning mt-4">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% if inscriptions != [] and inscriptions.getTotalItemCount > 0 %}
+            <h1>Les préinscriptions</h1>
+
+
+            <div class="count mt-4">
+            <h4>Il y a {{ inscriptions.getTotalItemCount }} préinscriptions au total</h4>
+            </div>
+
+            <div class="d-inline-flex gap-4">
+                <form action="{{ path('formation.presinscription') }}" method="POST">
+                    <input type="hidden" name="nom" value="true" />
+                    <button type="submit" class="btn btn-secondary" name="nom" >Classer par nom de formation </button>
+                </form>
+                <form action="{{ path('formation.presinscription') }}" method="POST">
+                    <input type="hidden" name="date" value="true" />
+                    <button type="submit" class="btn btn-secondary" name="date" >Classer date de modification</button>
+                </form>
+            </div>
+
+            <table class="table table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">formation</th>
+                    <th scope="col">theme</th>
+                    <th scope="col">groupe</th>
+                    <th scope="col">date de préinscriptions</th>
+                    <th scope="col">date de modification</th>
+                    <th scope="col">date de la formation </th>
+                    <th scope="col">date fin d'inscription</th>
+                    <th scope="col"> </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for inscription in inscriptions %}
+                    <tr class="table-primary">
+                        <th scope="row">{{ inscription.formation.titre }}</th>
+                        <td>{{ inscription.formation.theme }}</td>
+                        <td>{{ inscription.formation.groupe }}</td>
+                        <td>{{ inscription.datePresInscription|date('d/m/Y') }}</td>
+                        <td>{{ inscription.upDatedAt|date('d/m/Y') }}</td>
+                        <th scope="col">{{ (inscription.formation.dateRealisation is null) ? inscription.formation.datePrevisionnel : inscription.formation.dateRealisation }}</th>
+                        <td>{{ (inscription.formation.dateFinInscription is null) ? 'non renseigné' : inscription.formation.dateFinInscription|date('d/m/Y') }}</td>
+                        <td>
+                            {% if inscription.validationInscription == false %}
+                                <a href="{{ path('formation.inscFormation', { id: inscription.id})}}" class="btn btn-info">consulter / valider </a>
+                            {% else %}
+                                <a href="{{ path('formation.inscFormation', { id: inscription.id})}}" class="btn btn-warning">consulter / se désinscrire </a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+            </table>
+
+            {# display navigation #}
+            <div class="navigation d-flex justify-content-center mt-4">
+                {{ knp_pagination_render(inscriptions) }}
+            </div>
+            {% else %}
+            <h4>Vous n'avez pas de préinscriptions</h4>
+        {% endif %}
+    </div>
+{% endblock %}
